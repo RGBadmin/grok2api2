@@ -233,6 +233,27 @@ def _build_image_link_response(*, model: str, image_ref: str, usage: dict) -> di
     }
 
 
+def _build_text_response(*, model: str, text: str, usage: dict) -> dict:
+    created = int(time.time())
+    return {
+        "id": f"chatcmpl-txt-{created}",
+        "object": "chat.completion",
+        "created": created,
+        "model": model,
+        "choices": [
+            {
+                "index": 0,
+                "message": {
+                    "role": "assistant",
+                    "content": text,
+                },
+                "finish_reason": "stop",
+            }
+        ],
+        "usage": usage,
+    }
+
+
 def _looks_like_final_jpeg(image_ref: str) -> bool:
     ref = (image_ref or "").strip().lower()
     if not ref:
@@ -292,6 +313,22 @@ async def _image_stream_to_openai_chunks(stream_data, *, model: str):
     stream_iter = stream_data.__aiter__()
     partial_deadline: Optional[float] = None
 
+    # emit a first OpenAI-compatible chunk early to avoid proxy first-byte timeout
+    role_chunk = {
+        "id": chunk_id,
+        "object": "chat.completion.chunk",
+        "created": created,
+        "model": model,
+        "choices": [
+            {
+                "index": 0,
+                "delta": {"role": "assistant"},
+                "finish_reason": None,
+            }
+        ],
+    }
+    yield f"data: {json.dumps(role_chunk, ensure_ascii=False)}\n\n"
+
     while True:
         timeout = None
         if partial_deadline is not None:
@@ -345,6 +382,26 @@ async def _image_stream_to_openai_chunks(stream_data, *, model: str):
                     partial_deadline = time.time() + 30
                 continue
 
+            if evt_type == "error":
+                fail_chunk = _build_text_chunk(
+                    chunk_id=chunk_id,
+                    created=created,
+                    model=model,
+                    text="生成失败请重试",
+                    finish_reason=None,
+                )
+                yield f"data: {json.dumps(fail_chunk, ensure_ascii=False)}\n\n"
+                done_chunk = _build_text_chunk(
+                    chunk_id=chunk_id,
+                    created=created,
+                    model=model,
+                    text="",
+                    finish_reason="stop",
+                )
+                yield f"data: {json.dumps(done_chunk, ensure_ascii=False)}\n\n"
+                yield "data: [DONE]\n\n"
+                return
+
             if evt_type != "image_generation.completed":
                 continue
 
@@ -379,7 +436,7 @@ async def _image_stream_to_openai_chunks(stream_data, *, model: str):
             return
 
     # stream ended without a valid final image
-    end_text = "生成失败请重试" if partial_deadline is not None else ""
+    end_text = "生成失败请重试"
     if end_text:
         fail_chunk = _build_text_chunk(
             chunk_id=chunk_id,
@@ -814,26 +871,16 @@ async def chat_completions(request: ChatCompletionRequest):
             )
 
         image_payload = _pick_final_image_payload(result.data)
-        if not image_payload:
-            raw_preview = ""
-            try:
-                raw_preview = str(result.data[:3])
-            except Exception:
-                raw_preview = str(result.data)
-            raise AppException(
-                message=f"Image generation failed: no valid image payload returned. upstream={raw_preview}",
-                error_type=ErrorType.SERVER.value,
-                code="image_generation_failed",
-                status_code=500,
-            )
-
-        image_ref = image_payload
         usage = {
             "total_tokens": 0,
             "input_tokens": 0,
             "output_tokens": 0,
             "input_tokens_details": {"text_tokens": 0, "image_tokens": 0},
         }
+        if not image_payload:
+            return JSONResponse(content=_build_text_response(model=request.model, text="生成失败请重试", usage=usage))
+
+        image_ref = image_payload
         return JSONResponse(content=_build_image_link_response(model=request.model, image_ref=image_ref, usage=usage))
 
     if model_info and model_info.is_image:
@@ -844,7 +891,7 @@ async def chat_completions(request: ChatCompletionRequest):
         )
         image_conf = request.image_config or ImageConfig()
         _validate_image_config(image_conf, stream=bool(is_stream))
-        response_format = _resolve_image_format(image_conf.response_format)
+        response_format = "url"
         n = image_conf.n or 1
         size = image_conf.size or "1024x1024"
         aspect_ratio_map = {
@@ -893,26 +940,16 @@ async def chat_completions(request: ChatCompletionRequest):
             )
 
         image_payload = _pick_final_image_payload(result.data)
-        if not image_payload:
-            raw_preview = ""
-            try:
-                raw_preview = str(result.data[:3])
-            except Exception:
-                raw_preview = str(result.data)
-            raise AppException(
-                message=f"Image generation failed: no valid image payload returned. upstream={raw_preview}",
-                error_type=ErrorType.SERVER.value,
-                code="image_generation_failed",
-                status_code=500,
-            )
-
-        image_ref = image_payload
         usage = result.usage_override or {
             "total_tokens": 0,
             "input_tokens": 0,
             "output_tokens": 0,
             "input_tokens_details": {"text_tokens": 0, "image_tokens": 0},
         }
+        if not image_payload:
+            return JSONResponse(content=_build_text_response(model=request.model, text="生成失败请重试", usage=usage))
+
+        image_ref = image_payload
         return JSONResponse(content=_build_image_link_response(model=request.model, image_ref=image_ref, usage=usage))
 
     if model_info and model_info.is_video:
