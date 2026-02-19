@@ -9,6 +9,7 @@ import time
 
 from fastapi import APIRouter
 from fastapi.responses import StreamingResponse, JSONResponse, Response
+import aiohttp
 from pydantic import BaseModel, Field
 
 from app.services.grok.services.chat import ChatService
@@ -154,7 +155,7 @@ def _image_field(response_format: str) -> str:
     return "b64_json"
 
 
-def _decode_image_payload(payload: str) -> tuple[bytes, str]:
+async def _decode_image_payload(payload: str) -> tuple[bytes, str]:
     if not isinstance(payload, str) or not payload.strip():
         raise ValidationException(
             message="Image payload is empty",
@@ -164,6 +165,35 @@ def _decode_image_payload(payload: str) -> tuple[bytes, str]:
 
     body = payload.strip()
     mime = "image/png"
+
+    if body.startswith("http://") or body.startswith("https://"):
+        try:
+            timeout = aiohttp.ClientTimeout(total=90)
+            async with aiohttp.ClientSession(timeout=timeout) as session:
+                async with session.get(body) as resp:
+                    if resp.status != 200:
+                        raise ValidationException(
+                            message=f"Failed to download image from URL (status={resp.status})",
+                            param="image",
+                            code="invalid_image_payload",
+                        )
+                    ct = (resp.headers.get("Content-Type") or "").split(";", 1)[0].strip()
+                    data = await resp.read()
+                    if not data:
+                        raise ValidationException(
+                            message="Downloaded image is empty",
+                            param="image",
+                            code="empty_image",
+                        )
+                    return data, (ct or "image/png")
+        except ValidationException:
+            raise
+        except Exception as e:
+            raise ValidationException(
+                message=f"Failed to fetch image URL: {e}",
+                param="image",
+                code="invalid_image_payload",
+            )
 
     if body.startswith("data:"):
         if "," not in body:
@@ -617,7 +647,7 @@ async def chat_completions(request: ChatCompletionRequest):
                 status_code=500,
             )
 
-        image_bytes, media_type = _decode_image_payload(image_payload)
+        image_bytes, media_type = await _decode_image_payload(image_payload)
         return Response(content=image_bytes, media_type=media_type)
 
     if model_info and model_info.is_image:
@@ -685,7 +715,7 @@ async def chat_completions(request: ChatCompletionRequest):
                 status_code=500,
             )
 
-        image_bytes, media_type = _decode_image_payload(image_payload)
+        image_bytes, media_type = await _decode_image_payload(image_payload)
         return Response(content=image_bytes, media_type=media_type)
 
     if model_info and model_info.is_video:
