@@ -223,7 +223,7 @@ def _build_image_link_response(*, model: str, image_ref: str, usage: dict) -> di
                 "message": {
                     "role": "assistant",
                     # Keep content as plain string URL/data-uri for maximum client compatibility.
-                    "content": image_ref,
+                    "content": f"![image]({image_ref})",
                 },
                 "finish_reason": "stop",
             }
@@ -265,7 +265,7 @@ async def _image_stream_to_openai_chunks(stream_data, *, model: str):
                 "choices": [
                     {
                         "index": 0,
-                        "delta": {"content": image_ref},
+                        "delta": {"content": f"![image]({image_ref})"},
                         "finish_reason": None,
                     }
                 ],
