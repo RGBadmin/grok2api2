@@ -1,5 +1,5 @@
 """
-Grok2API 应用入口
+2grok2api 应用入口
 
 FastAPI 应用初始化和路由注册
 """
@@ -53,7 +53,7 @@ async def lifespan(app: FastAPI):
     await config.load()
 
     # 3. 启动服务显示
-    logger.info("Starting Grok2API...")
+    logger.info("Starting 2grok2api...")
     logger.info(f"Platform: {platform.system()} {platform.release()}")
     logger.info(f"Python: {sys.version.split()[0]}")
 
@@ -70,7 +70,7 @@ async def lifespan(app: FastAPI):
     yield
 
     # 关闭
-    logger.info("Shutting down Grok2API...")
+    logger.info("Shutting down 2grok2api...")
 
     from app.core.storage import StorageFactory
 
@@ -85,7 +85,7 @@ async def lifespan(app: FastAPI):
 def create_app() -> FastAPI:
     """创建 FastAPI 应用"""
     app = FastAPI(
-        title="Grok2API",
+        title="2grok2api",
         lifespan=lifespan,
     )
 

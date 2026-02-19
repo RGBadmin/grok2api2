@@ -1,4 +1,4 @@
-# Grok2API
+# 2grok2api
 
 [中文](../readme.md) | **English**
 
@@ -8,7 +8,7 @@
 > [!NOTE]
 > Open source projects welcome everyone's support for secondary development and pull requests, but please retain the original author's and frontend's logos to respect the work of others!
 
-Grok2API rebuilt with **FastAPI**, fully aligned with the latest web call format. Supports streaming/non-streaming chat, image generation/editing, video generation/upscale (text-to-video and image-to-video), deep reasoning, token pool concurrency, and automatic load balancing.
+2grok2api rebuilt with **FastAPI**, fully aligned with the latest web call format. Supports streaming/non-streaming chat, image generation/editing, video generation/upscale (text-to-video and image-to-video), deep reasoning, token pool concurrency, and automatic load balancing.
 
 <img width="2618" height="1658" alt="image" src="https://github.com/user-attachments/assets/a8c406f8-4c28-483a-8099-c23df5df7605" />
 
@@ -26,15 +26,15 @@ uv run main.py
 ### Docker Compose
 
 ```bash
-git clone https://github.com/chenyme/grok2api
-cd grok2api
+git clone https://github.com/RGBadmin/2grok2api
+cd 2grok2api
 
 docker compose up -d
 ```
 
 ### Vercel
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/chenyme/grok2api&env=LOG_LEVEL,LOG_FILE_ENABLED,DATA_DIR,SERVER_STORAGE_TYPE,SERVER_STORAGE_URL&envDefaults=%7B%22DATA_DIR%22%3A%22/tmp/data%22%2C%22LOG_FILE_ENABLED%22%3A%22false%22%2C%22LOG_LEVEL%22%3A%22INFO%22%2C%22SERVER_STORAGE_TYPE%22%3A%22local%22%2C%22SERVER_STORAGE_URL%22%3A%22%22%7D)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/RGBadmin/2grok2api&env=LOG_LEVEL,LOG_FILE_ENABLED,DATA_DIR,SERVER_STORAGE_TYPE,SERVER_STORAGE_URL&envDefaults=%7B%22DATA_DIR%22%3A%22/tmp/data%22%2C%22LOG_FILE_ENABLED%22%3A%22false%22%2C%22LOG_LEVEL%22%3A%22INFO%22%2C%22SERVER_STORAGE_TYPE%22%3A%22local%22%2C%22SERVER_STORAGE_URL%22%3A%22%22%7D)
 
 > Set `DATA_DIR=/tmp/data` and disable file logs with `LOG_FILE_ENABLED=false`.
 >
@@ -42,7 +42,7 @@ docker compose up -d
 
 ### Render
 
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/chenyme/grok2api)
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/RGBadmin/2grok2api)
 
 > Render free instances sleep after 15 minutes of inactivity; redeploy/restart will lose data.
 >
@@ -53,7 +53,7 @@ docker compose up -d
 ## Admin Panel
 
 - Access: `http://<host>:9765/admin`
-- Default password: `grok2api` (config `app.app_key`, recommended to change)
+- Default password: `2grok2api` (config `app.app_key`, recommended to change)
 
 **Features**:
 
@@ -279,7 +279,7 @@ Config file: `data/config.toml`
 | Module | Field | Key | Description | Default |
 | :-- | :-- | :-- | :-- | :-- |
 | **app** | `app_url` | App URL | External base URL used for file links. | `http://127.0.0.1:9765` |
-|  | `app_key` | Admin password | Login password for admin panel. | `grok2api` |
+|  | `app_key` | Admin password | Login password for admin panel. | `2grok2api` |
 |  | `api_key` | API key | Optional API key for access. | `""` |
 |  | `image_format` | Image format | `url` or `base64`. | `url` |
 |  | `video_format` | Video format | `html` or `url` (processed link). | `html` |
@@ -342,4 +342,4 @@ Config file: `data/config.toml`
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=Chenyme/grok2api&type=Timeline)](https://star-history.com/#Chenyme/grok2api&Timeline)
+[![Star History Chart](https://api.star-history.com/svg?repos=RGBadmin/2grok2api&type=Timeline)](https://star-history.com/#RGBadmin/2grok2api&Timeline)

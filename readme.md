@@ -1,4 +1,4 @@
-# Grok2API
+# 2grok2api
 
 **中文** | [English](docs/README.en.md)
 
@@ -8,7 +8,7 @@
 > [!NOTE]
 > 开源项目欢迎大家支持二开和PR，但请保留原作者标识和前端标识，尊重他人劳动成果～！
 
-基于 **FastAPI** 重构的 Grok2API，全面适配最新 Web 调用格式，支持流/非流式对话、图像生成/编辑、视频生成/超分（文生视频 / 图生视频）、深度思考，号池并发与自动负载均衡一体化。
+基于 **FastAPI** 重构的 2grok2api，全面适配最新 Web 调用格式，支持流/非流式对话、图像生成/编辑、视频生成/超分（文生视频 / 图生视频）、深度思考，号池并发与自动负载均衡一体化。
 
 <img width="2618" height="1658" alt="image" src="https://github.com/user-attachments/assets/a8c406f8-4c28-483a-8099-c23df5df7605" />
 
@@ -26,15 +26,15 @@ uv run main.py
 ### Docker Compose
 
 ```bash
-git clone https://github.com/chenyme/grok2api
-cd grok2api
+git clone https://github.com/RGBadmin/2grok2api
+cd 2grok2api
 
 docker compose up -d
 ```
 
 ### Vercel 部署
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/chenyme/grok2api&env=LOG_LEVEL,LOG_FILE_ENABLED,DATA_DIR,SERVER_STORAGE_TYPE,SERVER_STORAGE_URL&envDefaults=%7B%22DATA_DIR%22%3A%22/tmp/data%22%2C%22LOG_FILE_ENABLED%22%3A%22false%22%2C%22LOG_LEVEL%22%3A%22INFO%22%2C%22SERVER_STORAGE_TYPE%22%3A%22local%22%2C%22SERVER_STORAGE_URL%22%3A%22%22%7D)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/RGBadmin/2grok2api&env=LOG_LEVEL,LOG_FILE_ENABLED,DATA_DIR,SERVER_STORAGE_TYPE,SERVER_STORAGE_URL&envDefaults=%7B%22DATA_DIR%22%3A%22/tmp/data%22%2C%22LOG_FILE_ENABLED%22%3A%22false%22%2C%22LOG_LEVEL%22%3A%22INFO%22%2C%22SERVER_STORAGE_TYPE%22%3A%22local%22%2C%22SERVER_STORAGE_URL%22%3A%22%22%7D)
 
 > 请务必设置 `DATA_DIR=/tmp/data` 并关闭文件日志 `LOG_FILE_ENABLED=false`。
 >
@@ -42,7 +42,7 @@ docker compose up -d
 
 ### Render 部署
 
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/chenyme/grok2api)
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/RGBadmin/2grok2api)
 
 > Render 免费实例 15 分钟无访问会休眠；重启/重新部署会丢失数据。
 >
@@ -53,7 +53,7 @@ docker compose up -d
 ## 管理面板
 
 - 访问地址：`http://<host>:9765/admin`
-- 默认密码：`grok2api`（配置项 `app.app_key`，建议修改）
+- 默认密码：`2grok2api`（配置项 `app.app_key`，建议修改）
 
 **功能说明**：
 
@@ -278,9 +278,9 @@ curl http://localhost:9765/v1/images/edits \
 
 | 模块 | 字段 | 配置名 | 说明 | 默认值 |
 | :-- | :-- | :-- | :-- | :-- |
-| **app** | `app_url` | 应用地址 | 当前 Grok2API 服务的外部访问 URL，用于文件链接访问。 | `http://127.0.0.1:9765` |
-|  | `app_key` | 后台密码 | 登录 Grok2API 管理后台的密码（必填）。 | `grok2api` |
-|  | `api_key` | API 密钥 | 调用 Grok2API 服务的 Token（可选）。 | `""` |
+| **app** | `app_url` | 应用地址 | 当前 2grok2api 服务的外部访问 URL，用于文件链接访问。 | `http://127.0.0.1:9765` |
+|  | `app_key` | 后台密码 | 登录 2grok2api 管理后台的密码（必填）。 | `2grok2api` |
+|  | `api_key` | API 密钥 | 调用 2grok2api 服务的 Token（可选）。 | `""` |
 |  | `image_format` | 图片格式 | 生成的图片格式（url 或 base64）。 | `url` |
 |  | `video_format` | 视频格式 | 生成的视频格式（html 或 url，url 为处理后的链接）。 | `html` |
 |  | `temporary` | 临时对话 | 是否启用临时对话模式。 | `true` |
@@ -342,4 +342,4 @@ curl http://localhost:9765/v1/images/edits \
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=Chenyme/grok2api&type=Timeline)](https://star-history.com/#Chenyme/grok2api&Timeline)
+[![Star History Chart](https://api.star-history.com/svg?repos=RGBadmin/2grok2api&type=Timeline)](https://star-history.com/#RGBadmin/2grok2api&Timeline)

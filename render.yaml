@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: grok2api
+    name: 2grok2api
     env: docker
     plan: free
     autoDeploy: false
