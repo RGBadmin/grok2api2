@@ -126,3 +126,14 @@ curl http://localhost:9765/v1/chat/completions \
 - 感谢上游 `chenyme/grok2api` 的开源工作。
 - 本项目为二次开发版本，欢迎提交 Issue / PR。
 - 请在遵守服务条款与法律法规前提下使用，禁止非法用途。
+
+## 开源协议
+
+本项目沿用与上游项目 `chenyme/grok2api` 相同的开源协议：**MIT License**。
+
+- 上游仓库：`chenyme/grok2api`
+- 本仓库：`RGBadmin/2grok2api`
+- 详细条款见仓库根目录 [`LICENSE`](./LICENSE)
+
+二次开发、分发与商用请遵守 MIT 协议要求，并保留原始版权与许可声明。
+
